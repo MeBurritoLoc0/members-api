@@ -1,10 +1,6 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
+from app import db, ma
 from config import DevelopmentConfig, TestingConfig, ProductionConfig
-
-db = SQLAlchemy()
-ma = Marshmallow()
 
 def create_app(config_name="development"):
     app = Flask(__name__)
@@ -21,5 +17,9 @@ def create_app(config_name="development"):
 
     from app.routes import members_bp
     app.register_blueprint(members_bp)
+
+    # ✅ Create tables in production
+    with app.app_context():
+        db.create_all()
 
     return app
